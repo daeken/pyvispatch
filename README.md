@@ -24,6 +24,7 @@ enhanced by O.Sezer, in Python. pyvispatch was created to:
 positional arguments:
 
 *	file
+
 	> level filename pattern, .bsp or .pak type, wildcards
 	> are allowed, relative paths are not allowed
 
