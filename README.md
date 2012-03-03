@@ -22,32 +22,39 @@ enhanced by O.Sezer, in Python. pyvispatch was created to:
 `vispatch.py [-h] [--version] [-D DIRECTORY] [-d VIS_FILE] [-n | -e] file`
 
 positional arguments:
+
 *	file
 	> level filename pattern, .bsp or .pak type, wildcards
 	> are allowed, relative paths are not allowed
 
 optional arguments:
+
 *	-h, --help
 	> show this help message and exit
+	
 *	--version
 	> show program's version number and exit
+	
 *	-D DIRECTORY, --dir DIRECTORY
 	> the directory that the level files are in (default: current directory)
+	
 *	-d VIS_FILE, --data VIS_FILE
 	> the vis data file (default: vispatch.dat)
+	
 *	-n, --new
 	> instead of overwriting the original level files, if files are inside a
 	> .pak create a new .pak with the modified files, else if they are
 	> individual .bsp files copy a backup of each old file to name.bak before
 	> patching
+	
 *	-e, --extract
 	> retrieve all the vis data from the given file
 
 ## License
 
-Copyright &copy; 1996-1997 [Id Software, Inc.](http://www.idsoftware.com/)
-Copyright &copy; 1997-2006 Andy Bay <IMarvinTPA@bigfoot.com>
-Copyright &copy; 2007-2011 O.Sezer <sezero@users.sourceforge.net>
+Copyright &copy; 1996-1997 [Id Software, Inc.](http://www.idsoftware.com/)  
+Copyright &copy; 1997-2006 Andy Bay <IMarvinTPA@bigfoot.com>  
+Copyright &copy; 2007-2011 O.Sezer <sezero@users.sourceforge.net>  
 Copyright &copy; 2012 John Trainer <n@nightmiles.org>
 
 pyvispatch comes with ABSOLUTELY NO WARRANTY. This is free software, and you
