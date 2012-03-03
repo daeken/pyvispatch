@@ -356,7 +356,7 @@ def patch_bsp_file(filepath, vispatch, tempfilename, new, mapsdir):
 			os.rename(tempfilename, filepath)
 		else:
 			# No patching happened, so get rid of the temp file
-			os.delete(tempfilename)
+			os.remove(tempfilename)
 
 		
 def extract_bsp(bsp, vispatch):
@@ -465,7 +465,7 @@ def patch_pak(filepath, vispatch, tempfilename, sharedpakfile, newpak):
 			os.rename(tempfilename, filepath)
 		else:
 			# No patching happened, so get rid of the temp file
-			os.delete(tempfilename)
+			os.remove(tempfilename)
 	else:
 		# In new mode, so write into the previously opened temporary PAK file
 		# and use the shared newpak object.
