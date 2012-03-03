@@ -138,7 +138,7 @@ def main(filemask, mapsdir, visfilename, new=False, extract=False):
 				
 			if '*' in filemask:
 				for filename in os.listdir(mapsdir):
-					if fnmatch.fnmatch(filename.lower(), filemask) 
+					if fnmatch.fnmatch(filename.lower(), filemask) \
 							and filename.lower().endswith(('.pak', '.bsp')):
 						patch_file(filename, vispatch, tempfilename, 
 							temppakfile, newpak, mapsdir)	
@@ -161,14 +161,14 @@ def main(filemask, mapsdir, visfilename, new=False, extract=False):
 			os.rename(temppakname, outpakname)
 		else:
 			# Otherwise, just delete the temp file
-			os.delete(temppakname)
+			os.remove(temppakname)
 	else:
 		# Extract mode
 		vispatch = vispatch_data.VisPatch()
 		
 		if '*' in filemask:
 			for filename in os.listdir(mapsdir):
-				if fnmatch.fnmatch(filename.lower(), filemask) 
+				if fnmatch.fnmatch(filename.lower(), filemask) \
 						and filename.lower().endswith(('.pak', '.bsp')):
 					extract_file(filename, vispatch, mapsdir)
 		elif filemask.lower().endswith(('.pak', '.bsp')):
@@ -412,7 +412,7 @@ def patch_pak_into_file(path, vispatch, tempfile, newpak=None):
 			newoffset = tempfile.tell()
 			
 			# Only operate on the file if it's a .bsp of at least MIN_BSP_SIZE
-			if entry.size >= MIN_BSP_SIZE 
+			if entry.size >= MIN_BSP_SIZE \
 					and entry.filename.lower().endswith('.bsp'):
 				print 'Looking at file %s.' % (entry.filename)
 				bsp = quake_bsp.QuakeBsp(entry.filename, pakfile, 
@@ -482,7 +482,7 @@ def extract_pak(path, vispatch):
 
 		for entry in pak.entries:
 			# Only operate on the file if it's a .bsp of at least MIN_BSP_SIZE
-			if entry.size >= MIN_BSP_SIZE 
+			if entry.size >= MIN_BSP_SIZE \
 					and entry.filename.lower().endswith('.bsp'):
 				print 'Looking at file %s.' % (entry.filename)
 				bsp = quake_bsp.QuakeBsp(entry.filename, pakfile, 

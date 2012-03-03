@@ -42,15 +42,15 @@ class VisPatchEntry:
 		
 		bspnamelen = len(self.bspname)
 		if (bspnamelen < VISPATCH_BSPNAME_LEN):
-			''.join(data, 
-				struct.pack('x' * (VISPATCH_BSPNAME_LEN - bspnamelen)))
+			''.join([data, 
+				struct.pack('x' * (VISPATCH_BSPNAME_LEN - bspnamelen))])
 		
 		visdatasize = len(self.visdata)
 		leafdatasize = len(self.leafdata)
 		
-		''.join(data, struct.pack('i', 8 + visdatasize + leafdatasize),
+		''.join([data, struct.pack('i', 8 + visdatasize + leafdatasize),
 			struct.pack('i', visdatasize), self.visdata,
-			struct.pack('i', leafdatasize, self.leafdata)
+			struct.pack('i', leafdatasize, self.leafdata)])
 		
 		return data
 		
@@ -131,7 +131,7 @@ class VisPatch:
 		data = ''
 		
 		for entry in self.entries:
-			''.join(data, entry.get_packed())
+			''.join([data, entry.get_packed()])
 			
 		return data
 		

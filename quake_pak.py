@@ -75,7 +75,7 @@ class QuakePakEntry(quake_data.DirectoryEntry):
 			''.join(data, 
 				struct.pack('x' * (PAKENTRY_FILENAME_LEN - filenamelen)))
 		
-		''.join(data, quake_data.DirectoryEntry.get_packed(self))
+		''.join([data, quake_data.DirectoryEntry.get_packed(self)])
 		
 		return data
 		
@@ -138,7 +138,7 @@ class QuakePak:
 		data = ''
 		
 		for entry in self.entries:
-			data = data + entry.get_packed()
+			''.join([data, entry.get_packed()])
 			
 		return data
 			
