@@ -30,24 +30,30 @@ positional arguments:
 optional arguments:
 
 *	-h, --help
+
 	> show this help message and exit
 	
 *	--version
+
 	> show program's version number and exit
 	
 *	-D DIRECTORY, --dir DIRECTORY
+
 	> the directory that the level files are in (default: current directory)
 	
 *	-d VIS_FILE, --data VIS_FILE
+
 	> the vis data file (default: vispatch.dat)
 	
 *	-n, --new
+
 	> instead of overwriting the original level files, if files are inside a
 	> .pak create a new .pak with the modified files, else if they are
 	> individual .bsp files copy a backup of each old file to name.bak before
 	> patching
 	
 *	-e, --extract
+
 	> retrieve all the vis data from the given file
 
 ## License
