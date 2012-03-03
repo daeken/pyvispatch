@@ -72,8 +72,8 @@ class QuakePakEntry(quake_data.DirectoryEntry):
 		
 		filenamelen = len(self.filename_fixed)
 		if (filenamelen < PAKENTRY_FILENAME_LEN):
-			''.join(data, 
-				struct.pack('x' * (PAKENTRY_FILENAME_LEN - filenamelen)))
+			''.join([data, 
+				struct.pack('x' * (PAKENTRY_FILENAME_LEN - filenamelen))])
 		
 		''.join([data, quake_data.DirectoryEntry.get_packed(self)])
 		
