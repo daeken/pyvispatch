@@ -12,6 +12,7 @@ information within the original levels. pyvispatch can patch both standalone BSP
 This tool is a full re-implementation of the original
 [VisPatch](http://vispatch.sourceforge.net/) utility, authored by Andy Bay and
 enhanced by O.Sezer, in Python. pyvispatch was created to:
+
 * Reduce some limitations of the original VisPatch such as relative directory handling
 * Address bugs in the output of PAK files
 * Make it easier to extend the tool or include it with other applications
