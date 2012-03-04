@@ -29,7 +29,6 @@ VISPATCH_ENTRY_SIZE_LEN = 4
 VISPATCH_VISDATA_SIZE_LEN = 4
 VISPATCH_LEAFDATA_SIZE_LEN = 4
 
-
 class VisPatchEntry:
 	def __init__(self, bspname, visdata, leafdata, number=None):
 		self.number = number
@@ -42,18 +41,20 @@ class VisPatchEntry:
 		
 		bspnamelen = len(self.bspname)
 		if (bspnamelen < VISPATCH_BSPNAME_LEN):
-			''.join([data, 
-				struct.pack('x' * (VISPATCH_BSPNAME_LEN - bspnamelen))])
+			data = data + struct.pack('x' * (VISPATCH_BSPNAME_LEN - bspnamelen))
 		
 		visdatasize = len(self.visdata)
 		leafdatasize = len(self.leafdata)
 		
-		''.join([data, struct.pack('i', 8 + visdatasize + leafdatasize),
-			struct.pack('i', visdatasize), self.visdata,
-			struct.pack('i', leafdatasize, self.leafdata)])
+		data = data + struct.pack('i', 8 + visdatasize + leafdatasize)
+		
+		data = data + struct.pack('i', visdatasize)
+		data = data + self.visdata
+		
+		data = data + struct.pack('i', leafdatasize)
+		data = data + self.leafdata
 		
 		return data
-		
 		
 class VisPatch:
 	def __init__(self, filename=None):
@@ -71,42 +72,36 @@ class VisPatch:
 
 					entrysize = visfile.read(VISPATCH_ENTRY_SIZE_LEN)
 					if len(entrysize) < VISPATCH_ENTRY_SIZE_LEN:
-						sys.stderr.write('Unexpected end of file reached ' +\
-							'while trying to read Vis file entry size\n')
+						sys.stderr.write('Unexpected end of file reached while trying to read Vis file entry size\n')
 						return 1
 					else:
 						entrysize = struct.unpack('i', entrysize)[0]
 
 					visdatasize = visfile.read(VISPATCH_VISDATA_SIZE_LEN)
 					if len(visdatasize) < VISPATCH_VISDATA_SIZE_LEN:
-						sys.stderr.write('Unexpected end of file reached ' +\
-							'while trying to read Vis data size\n')
+						sys.stderr.write('Unexpected end of file reached while trying to read Vis data size\n')
 						return 1
 					else:
 						visdatasize = struct.unpack('i', visdatasize)[0]
 
 					visdata = visfile.read(visdatasize)
 					if len(visdata) < visdatasize:
-						sys.stderr.write('Unexpected end of file reached ' +\
-							'while trying to read Vis data\n')
+						sys.stderr.write('Unexpected end of file reached while trying to read Vis data\n')
 						return 1
 
 					leafdatasize = visfile.read(VISPATCH_LEAFDATA_SIZE_LEN)
 					if len(leafdatasize) < VISPATCH_LEAFDATA_SIZE_LEN:
-						sys.stderr.write('Unexpected end of file reached ' +\
-							'while trying to read leaf data size\n')
+						sys.stderr.write('Unexpected end of file reached while trying to read leaf data size\n')
 						return 1
 					else:
 						leafdatasize = struct.unpack('i', leafdatasize)[0]
 
 					leafdata = visfile.read(leafdatasize)
 					if len(leafdata) < leafdatasize:
-						sys.stderr.write('Unexpected end of file reached ' +\
-							'while trying to read leaf data\n')
+						sys.stderr.write('Unexpected end of file reached while trying to read leaf data\n')
 						return 1
 
-					self.entries.append(VisPatchEntry(bspname, visdata, 
-						leafdata, count))
+					self.entries.append(VisPatchEntry(bspname, visdata, leafdata, count))
 
 					count = count + 1
 					bspname = visfile.read(VISPATCH_BSPNAME_LEN)
@@ -131,7 +126,7 @@ class VisPatch:
 		data = ''
 		
 		for entry in self.entries:
-			''.join([data, entry.get_packed()])
+			data = data + entry.get_packed()
 			
 		return data
 		

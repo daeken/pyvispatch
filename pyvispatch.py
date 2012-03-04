@@ -33,9 +33,8 @@ import quake_pak
 import vispatch_data
 
 APP_NAME = 'pyvispatch'
-APP_VERSION = '0.0.1'
-COPYRIGHT_NOTICE = 	\
-'Copyright (C) 1996-1997  Id Software, Inc.\n' +\
+APP_VERSION = '0.0.2'
+COPYRIGHT_NOTICE = 	'Copyright (C) 1996-1997  Id Software, Inc.\n' +\
 'Copyright (C) 1997-2006  Andy Bay <IMarvinTPA@bigfoot.com>\n' +\
 'Copyright (C) 2007-2011  O.Sezer <sezero@users.sourceforge.net>\n' +\
 'Copyright (C) 2012       John Trainer <n@nightmiles.org>\n\n' +\
@@ -52,10 +51,8 @@ MODE_PATCH = 0
 MODE_EXTRACT = 1
 MODE_NEW = 2
 	
-	
 def main(filemask, mapsdir, visfilename, new=False, extract=False):
 	print '%s v%s\n\n%s\n' % (APP_NAME, APP_VERSION, COPYRIGHT_NOTICE) 
-	
 	
 	if not filemask or len(filemask) < 1:
 		sys.stderr.write('You must specify a file or wildcard to patch\n')
@@ -123,7 +120,6 @@ def main(filemask, mapsdir, visfilename, new=False, extract=False):
 			sys.stderr.write('No Vis entries found in the Vis source file\n')
 			return 1
 		
-		
 		# Start by creating/truncating temporary PAK file.
 		#
 		# This won't actually be used unless in new mode, but it's easier to
@@ -138,17 +134,14 @@ def main(filemask, mapsdir, visfilename, new=False, extract=False):
 				
 			if '*' in filemask:
 				for filename in os.listdir(mapsdir):
-					if fnmatch.fnmatch(filename.lower(), filemask) \
-							and filename.lower().endswith(('.pak', '.bsp')):
-						patch_file(filename, vispatch, tempfilename, 
-							temppakfile, newpak, mapsdir)	
+					if fnmatch.fnmatch(filename.lower(), filemask) and filename.lower().endswith(('.pak', '.bsp')):
+						patch_file(filename, vispatch, tempfilename, temppakfile, newpak, mapsdir)	
 			elif filemask.lower().endswith(('.pak', '.bsp')):
-				patch_file(filemask, vispatch, tempfilename, temppakfile, 
-					newpak, mapsdir)
+				patch_file(filemask, vispatch, tempfilename, temppakfile, newpak, mapsdir)
 			# VisPatch displays no error/warning when filename/mask is 
 			# provided but is not/does not match a BSP or PAK or if file was 
 			# not found.
-			
+
 			# After processing BSPs, if a new PAK was made write out its 
 			# header and directory.
 			if new and len(newpak.entries) > 0:
@@ -168,8 +161,7 @@ def main(filemask, mapsdir, visfilename, new=False, extract=False):
 		
 		if '*' in filemask:
 			for filename in os.listdir(mapsdir):
-				if fnmatch.fnmatch(filename.lower(), filemask) \
-						and filename.lower().endswith(('.pak', '.bsp')):
+				if fnmatch.fnmatch(filename.lower(), filemask) and filename.lower().endswith(('.pak', '.bsp')):
 					extract_file(filename, vispatch, mapsdir)
 		elif filemask.lower().endswith(('.pak', '.bsp')):
 			extract_file(filemask, vispatch, mapsdir)
@@ -180,22 +172,18 @@ def main(filemask, mapsdir, visfilename, new=False, extract=False):
 			with open(visfilename, 'ab') as visfile:
 				visfile.write(vispatch.get_packed())
 		else:
-			print 'No vis info was found to extract. Vis data file will ' +\
-				'not be created/changed.'
+			print 'No vis info was found to extract. Vis data file will not be created/changed.'
 			
 	return 0
-
 
 def read_bsp_data(bspfile, inoffset, direntry):
 	bspfile.seek(inoffset + direntry.offset, os.SEEK_SET)
 	data = bspfile.read(direntry.size)
 	return data
 
-
 def copy_and_align(bspfile, inoffset, direntry, outfile):
 	data = read_bsp_data(bspfile, inoffset, direntry)
 	write_and_align(outfile, direntry.size, data)
-
 
 def write_and_align(outfile, size, data):
 	outfile.write(data)
@@ -203,10 +191,8 @@ def write_and_align(outfile, size, data):
 	if size % 4 != 0:
 		outfile.write(struct.pack('x' * (4 - (size % 4))))
 
-
 def patch_bsp(bsp, vispatch, tempfile, new=False):
-	print 'BSP Version %i, Vis info at %i (%i bytes)' % (bsp.version, 
-		bsp.visilist_metadata.offset, bsp.visilist_metadata.size)
+	print 'BSP Version %i, Vis info at %i (%i bytes)' % (bsp.version, bsp.visilist_metadata.offset, bsp.visilist_metadata.size)
 	
 	# If bsp.offset isn't None, the BSP is in a PAK file at offset bsp.offset
 	if bsp.offset:
@@ -240,8 +226,7 @@ def patch_bsp(bsp, vispatch, tempfile, new=False):
 	else:
 		visdatasize = len(visentry.visdata)
 		leafdatasize = len(visentry.leafdata)
-		print 'Name: %s Size: %i (# %i)' % (visentry.bspname, visdatasize, 
-			visentry.number)
+		print 'Name: %s Size: %i (# %i)' % (visentry.bspname, visdatasize, visentry.number)
 		
 		# Replace the size of VisData and leaves data with those of the data 
 		# they will be replaced with from the VisPatch.
@@ -283,8 +268,7 @@ def patch_bsp(bsp, vispatch, tempfile, new=False):
 		
 		# Existing clipnodes data
 		newoffset = tempfile.tell() - outoffset
-		copy_and_align(bsp.bspfile, inoffset, bsp.clipnodes_metadata, 
-			tempfile)
+		copy_and_align(bsp.bspfile, inoffset, bsp.clipnodes_metadata, tempfile)
 		bsp.clipnodes_metadata.offset = newoffset
 		
 		# Existing lface data
@@ -309,8 +293,7 @@ def patch_bsp(bsp, vispatch, tempfile, new=False):
 		
 		# Existing lightmaps data
 		newoffset = tempfile.tell() - outoffset
-		copy_and_align(bsp.bspfile, inoffset, bsp.lightmaps_metadata, 
-			tempfile)
+		copy_and_align(bsp.bspfile, inoffset, bsp.lightmaps_metadata, tempfile)
 		bsp.lightmaps_metadata.offset = newoffset
 		
 		# New visilist data from VisPatch
@@ -336,7 +319,6 @@ def patch_bsp(bsp, vispatch, tempfile, new=False):
 		
 		# Patching occurred
 		return True
-	
 		
 def patch_bsp_file(filepath, vispatch, tempfilename, new, mapsdir):
 	didpatch = False
@@ -350,8 +332,7 @@ def patch_bsp_file(filepath, vispatch, tempfilename, new, mapsdir):
 				didpatch = patch_bsp(bsp, vispatch, tempfile, new)
 		if didpatch:
 			if new:
-				bakpath = os.path.join(mapsdir, 
-					os.path.basename(filepath)[0:-4] + '.bak')
+				bakpath = os.path.join(mapsdir, os.path.basename(filepath)[0:-4] + '.bak')
 				os.rename(filepath, bakpath)
 			os.rename(tempfilename, filepath)
 		else:
@@ -361,17 +342,13 @@ def patch_bsp_file(filepath, vispatch, tempfilename, new, mapsdir):
 		
 def extract_bsp(bsp, vispatch):
 	print 'Version of bsp file is:  %i' % (bsp.version)
-	print 'Vis info is at %i and is %i long' % (bsp.visilist_metadata.offset, 
-		bsp.visilist_metadata.size)
-	print 'Leaf info is at %i and is %i long' % (bsp.leaves_metadata.offset, 
-		bsp.leaves_metadata.size)
+	print 'Vis info is at %i and is %i long' % (bsp.visilist_metadata.offset, bsp.visilist_metadata.size)
+	print 'Leaf info is at %i and is %i long' % (bsp.leaves_metadata.offset, bsp.leaves_metadata.size)
 	
 	if bsp.visilist_metadata.size < 1:
-		print 'Vis info size = %i.  Skipping...' % \
-			(bsp.visilist_metadata.size)
+		print 'Vis info size = %i.  Skipping...' % (bsp.visilist_metadata.size)
 	else:
-		# If bsp.offset isn't None, the BSP is in a PAK file at offset 
-		# bsp.offset
+		# If bsp.offset isn't None, the BSP is in a PAK file at offset bsp.offset
 		if bsp.offset:
 			inoffset = bsp.offset
 		else:
@@ -380,17 +357,14 @@ def extract_bsp(bsp, vispatch):
 		visdata = read_bsp_data(bsp.bspfile, inoffset, bsp.visilist_metadata)
 		leafdata = read_bsp_data(bsp.bspfile, inoffset, bsp.leaves_metadata)
 		
-		visentry = vispatch_data.VisPatchEntry(bsp.filename, visdata, 
-			leafdata)
+		visentry = vispatch_data.VisPatchEntry(bsp.filename, visdata, leafdata)
 		vispatch.append_entry(visentry)
-	
 		
 def extract_bsp_file(filepath, vispatch):
 	with open(filepath, 'rb') as bspfile:
 		print 'Looking at file %s.' % (os.path.basename(filepath))
 		bsp = quake_bsp.QuakeBsp(filepath, bspfile)
 		extract_bsp(bsp, vispatch)
-
 
 def patch_pak_into_file(path, vispatch, tempfile, newpak=None):
 	patchcount = 0
@@ -404,19 +378,16 @@ def patch_pak_into_file(path, vispatch, tempfile, newpak=None):
 	with open(path, 'rb') as pakfile:
 		pak = quake_pak.QuakePak(pakfile)
 
-		pakfile.seek(quake_pak.PAK_HEADER_OFFSET + quake_pak.PAK_HEADER_LEN, 
-			os.SEEK_SET)
+		pakfile.seek(quake_pak.PAK_HEADER_OFFSET + quake_pak.PAK_HEADER_LEN, os.SEEK_SET)
 		
 		for entry in pak.entries:
 			# New offset for this entry will be where we left off
 			newoffset = tempfile.tell()
 			
 			# Only operate on the file if it's a .bsp of at least MIN_BSP_SIZE
-			if entry.size >= MIN_BSP_SIZE \
-					and entry.filename.lower().endswith('.bsp'):
+			if entry.size >= MIN_BSP_SIZE and entry.filename.lower().endswith('.bsp'):
 				print 'Looking at file %s.' % (entry.filename)
-				bsp = quake_bsp.QuakeBsp(entry.filename, pakfile, 
-					entry.offset)
+				bsp = quake_bsp.QuakeBsp(entry.filename, pakfile, entry.offset)
 				
 				if patch_bsp(bsp, vispatch, tempfile, new):
 					patchcount = patchcount + 1
@@ -449,7 +420,6 @@ def patch_pak_into_file(path, vispatch, tempfile, newpak=None):
 			return True
 		else:
 			return False
-	
 			
 def patch_pak(filepath, vispatch, tempfilename, sharedpakfile, newpak):
 	if not newpak:
@@ -470,29 +440,23 @@ def patch_pak(filepath, vispatch, tempfilename, sharedpakfile, newpak):
 		# In new mode, so write into the previously opened temporary PAK file
 		# and use the shared newpak object.
 		patch_pak_into_file(filepath, vispatch, sharedpakfile, newpak)
-		
 			
 def extract_pak(path, vispatch):
 	print 'Looking at file %s.' % (os.path.basename(path))
 	with open(path, 'rb') as pakfile:
 		pak = quake_pak.QuakePak(pakfile)
 
-		pakfile.seek(quake_pak.PAK_HEADER_OFFSET + quake_pak.PAK_HEADER_LEN, 
-			os.SEEK_SET)
+		pakfile.seek(quake_pak.PAK_HEADER_OFFSET + quake_pak.PAK_HEADER_LEN, os.SEEK_SET)
 
 		for entry in pak.entries:
 			# Only operate on the file if it's a .bsp of at least MIN_BSP_SIZE
-			if entry.size >= MIN_BSP_SIZE \
-					and entry.filename.lower().endswith('.bsp'):
+			if entry.size >= MIN_BSP_SIZE and entry.filename.lower().endswith('.bsp'):
 				print 'Looking at file %s.' % (entry.filename)
-				bsp = quake_bsp.QuakeBsp(entry.filename, pakfile, 
-					entry.offset)
+				bsp = quake_bsp.QuakeBsp(entry.filename, pakfile, entry.offset)
 
 				extract_bsp(bsp, vispatch)
-		
 				
-def patch_file(filename, vispatch, tempfilename, temppakfile, newpak, 
-		mapsdir):
+def patch_file(filename, vispatch, tempfilename, temppakfile, newpak, mapsdir):
 	filepath = os.path.join(mapsdir, filename)
 				
 	if filepath.lower().endswith('.pak'):
@@ -501,7 +465,6 @@ def patch_file(filename, vispatch, tempfilename, temppakfile, newpak,
 	elif filepath.lower().endswith('.bsp'):
 		# This is a BSP file
 		patch_bsp_file(filepath, vispatch, tempfilename, newpak, mapsdir)
-	
 		
 def extract_file(filename, vispatch, mapsdir):
 	filepath = os.path.join(mapsdir, filename)	
@@ -512,14 +475,12 @@ def extract_file(filename, vispatch, mapsdir):
 	elif filepath.lower().endswith('.bsp'):
 		# This is a BSP file
 		extract_bsp_file(filepath, vispatch)
-	
 			
 if __name__ == "__main__":
 	try:
 		parser = argparse.ArgumentParser(
 			formatter_class=argparse.RawDescriptionHelpFormatter,
-			description='Quake level patcher for water visibility.\n\n' +\
-				COPYRIGHT_NOTICE)
+			description='Quake level patcher for water visibility.\n\n' + COPYRIGHT_NOTICE)
 		
 		newextractgroup = parser.add_mutually_exclusive_group(required=False);
 	
@@ -527,18 +488,18 @@ if __name__ == "__main__":
 			version='%(prog)s ' + APP_VERSION)
 			
 		parser.add_argument('-D', '--dir', metavar='DIRECTORY',
-			help='''the directory that the level files are in (default: 
-				current directory)''')
+			help='''the directory that the level files are in (default: current
+				directory)''')
 			
 		parser.add_argument('-d', '--data', metavar='VIS_FILE', 
 			type=str, default='vispatch.dat',
 			help='the vis data file (default: %(default)s)')
 		
 		newextractgroup.add_argument('-n', '--new', action='store_true',
-			help='''instead of overwriting the original level files, if files 
-				are inside a .pak create a new .pak with the modified files, 
-				else if they are individual .bsp files copy a backup of each 
-				old file to name.bak before patching''')
+			help='''instead of overwriting the original level files, if files are
+				inside a .pak create a new .pak with the modified files, else if
+				they are individual .bsp files copy a backup of each old file to
+				name.bak before patching''')
 		
 		newextractgroup.add_argument('-e', '--extract', action='store_true',
 			help='retrieve all the vis data from the given file')

@@ -27,7 +27,6 @@ import struct
 DIRECTORYENTRY_OFFSET_LEN = 4
 DIRECTORYENTRY_SIZE_LEN = 4
 
-
 class DirectoryEntry:
 	def __init__(self, dirfile=None, fileoffset=None, offset=None, size=None):
 		if dirfile: 
@@ -36,15 +35,13 @@ class DirectoryEntry:
 		
 			self.offset = dirfile.read(DIRECTORYENTRY_OFFSET_LEN)
 			if len(self.offset) < DIRECTORYENTRY_OFFSET_LEN:
-				raise Exception('Unexpected end of file reached while ' +\
-					'trying to read directory entry offset')
+				raise Exception('Unexpected end of file reached while trying to read directory entry offset')
 			else:
 				self.offset = struct.unpack('i', self.offset)[0]
 		
 			self.size = dirfile.read(DIRECTORYENTRY_SIZE_LEN)
 			if len(self.size) < DIRECTORYENTRY_SIZE_LEN:
-				raise Exception('Unexpected end of file reached while ' +\
-					'trying to read directory entry size')
+				raise Exception('Unexpected end of file reached while trying to read directory entry size')
 			else:
 				self.size = struct.unpack('i', self.size)[0]
 		else:

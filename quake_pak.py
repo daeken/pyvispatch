@@ -42,18 +42,15 @@ PAKENTRY_OFFSET_LEN = 4
 PAKENTRY_SIZE_LEN = 4
 PAKENTRY_LEN = PAKENTRY_FILENAME_LEN + PAKENTRY_OFFSET_LEN + PAKENTRY_SIZE_LEN
 
-
 class QuakePakEntry(quake_data.DirectoryEntry):
-	def __init__(self, pakfile=None, pakoffset=None, filename=None, 
-			offset=None, size=None):
+	def __init__(self, pakfile=None, pakoffset=None, filename=None, offset=None, size=None):
 		if pakfile:
 			if offset:
 				pakfile.seek(offset, os.SEEK_SET)
 		
 			self.filename = pakfile.read(PAKENTRY_FILENAME_LEN)
 			if len(self.filename) < PAKENTRY_FILENAME_LEN:
-				raise Exception('Unexpected end of file reached while ' +\
-					'trying to read PAK entry filename')
+				raise Exception('Unexpected end of file reached while trying to read PAK entry filename')
 			else:
 				self.filename_fixed = self.filename
 				self.filename = self.filename.split('\0')[0]
@@ -72,10 +69,9 @@ class QuakePakEntry(quake_data.DirectoryEntry):
 		
 		filenamelen = len(self.filename_fixed)
 		if (filenamelen < PAKENTRY_FILENAME_LEN):
-			''.join([data, 
-				struct.pack('x' * (PAKENTRY_FILENAME_LEN - filenamelen))])
+			data = data + struct.pack('x' * (PAKENTRY_FILENAME_LEN - filenamelen))
 		
-		''.join([data, quake_data.DirectoryEntry.get_packed(self)])
+		data = data + quake_data.DirectoryEntry.get_packed(self)
 		
 		return data
 		
@@ -90,19 +86,15 @@ class QuakePak:
 		
 			magic = pakfile.read(PAK_MAGIC_LEN)
 			if len(magic) < PAK_MAGIC_LEN:
-				raise Exception('Unexpected end of file reached while ' +\
-					'trying to read PAK format')
+				raise Exception('Unexpected end of file reached while trying to read PAK format')
 			elif magic != PAK_MAGIC:
-				raise Exception('Attempted to load a file which does not ' +\
-					'appear to be a valid PAK')
+				raise Exception('Attempted to load a file which does not appear to be a valid PAK')
 			
 			directory_metadata = quake_data.DirectoryEntry(dirfile=pakfile)
 			entrycount = directory_metadata.size / PAKENTRY_LEN
 			
 			if entrycount > MAX_FILES_IN_PAK:
-				raise Exception('This PAK appears to have %i files but ' +\
-					'PAKs only support up to %i.' % \
-					(entrycount, MAX_FILES_IN_PAK))
+				raise Exception('This PAK appears to have %i files but PAKs only support up to %i.' % (entrycount, MAX_FILES_IN_PAK))
 		
 			pakfile.seek(directory_metadata.offset, os.SEEK_SET)
 		
@@ -128,8 +120,7 @@ class QuakePak:
 	def get_header(self):
 		diroffset = PAK_HEADER_OFFSET + PAK_HEADER_LEN + self.get_data_size()
 		
-		directory_metadata = quake_data.DirectoryEntry(offset=diroffset, 
-			size=self.get_directory_size())
+		directory_metadata = quake_data.DirectoryEntry(offset=diroffset, size=self.get_directory_size())
 		data = PAK_MAGIC + directory_metadata.get_packed()
 		
 		return data
@@ -138,7 +129,7 @@ class QuakePak:
 		data = ''
 		
 		for entry in self.entries:
-			''.join([data, entry.get_packed()])
+			data = data + entry.get_packed()
 			
 		return data
 			

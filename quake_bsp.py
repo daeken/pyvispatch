@@ -28,7 +28,6 @@ import quake_data
 BSP_VERSION_LEN = 4
 BSP_HEADER_LEN = 4 + (8 * 15)
 
-
 class QuakeBsp:
 	def __init__(self, filename, bspfile, offset=None):
 		if offset:
@@ -36,8 +35,7 @@ class QuakeBsp:
 		
 		self.version = bspfile.read(BSP_VERSION_LEN)
 		if len(self.version) < BSP_VERSION_LEN:
-			raise Exception('Unexpected end of file reached while trying ' +\
-				'to read BSP version')
+			raise Exception('Unexpected end of file reached while trying to read BSP version')
 		else:
 			self.version = struct.unpack('i', self.version)[0]
 			
